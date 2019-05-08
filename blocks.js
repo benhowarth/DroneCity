@@ -10,13 +10,13 @@ class BlockType {
 }
 blockTypes={
   //city level
-  cityblock:new BlockType("cityblock",[100,100,100],1),
-  park:new BlockType("park",[100,150,100],15),
-  road:new BlockType("road",[50,50,50],5),
+  cityblock:new BlockType("cityblock",[100,100,100],10),
+  park:new BlockType("park",[100,150,100],20),
+  road:new BlockType("road",[50,50,50],12),
 
   //block level
-  smallcityblock:new BlockType("smallcityblock",[120,120,100],1),
-  alley:new BlockType("alley",[80,80,80],5),
+  smallcityblock:new BlockType("smallcityblock",[120,120,100],10),
+  alley:new BlockType("alley",[80,80,80],12),
   shop:new BlockType("shop",[100,100,150],70),
   house:new BlockType("house",[150,100,100],40),
 
@@ -41,6 +41,20 @@ class Block{
   }
   clone(){
     return new Block(this.type,this.x,this.y,this.w,this.h);
+  }
+  collide(posVec){
+    var collideVec=createVector(0,0,0);
+    var newPosVec=posVec;
+    if(newPosVec.x>this.x && newPosVec.x<this.x+this.w && newPosVec.z>this.y && newPosVec.z<this.y+this.h && newPosVec.y<0 && newPosVec.y>-this.type.height){
+      if(newPosVec.x<this.x+5){collideVec.x=1;}
+      else if(newPosVec.x>this.x+this.w-5){collideVec.x=-1;}
+      if(newPosVec.z<this.y+5){collideVec.z=-1;}
+      else if(newPosVec.z>this.y+this.h-5){collideVec.z=1;}
+      if(newPosVec.y>-5){collideVec.y=1;}
+      else if(newPosVec.y<this.type.height+5){collideVec.y=-1;}
+    }
+    if(collideVec.mag()>0){print(collideVec);}
+    return collideVec;
   }
 }
 
@@ -149,10 +163,10 @@ function checkBlock(blockToCheck){
 
     if(blockTypeBefore!=blockToCheck.type){
       blockChanged=true;
-      console.log("change!")
+      //console.log("change!")
       break;
     }else{
-      console.log("no change!")
+      //console.log("no change!")
     }
 
   }
@@ -164,10 +178,10 @@ function checkBlock(blockToCheck){
       rule=splitRules[c];
       blockListToReturn=rule.tryToSplit(blockToCheck);
       if(blockListToReturn.length>1){
-        console.log("split!")
+        //console.log("split!")
         break;
       }else{
-        console.log("no split!")
+        //console.log("no split!")
       }
     }
   }else{
@@ -198,7 +212,7 @@ function blockStep(blocks,blockCheckLim=0){
 
 function generateCity(iters,blocks){
   for(i=0;i<iters;i++){
-    console.log("Iteration "+i);
+    //console.log("Iteration "+i);
     blocks=blockStep(blocks);
   }
   return blocks;
